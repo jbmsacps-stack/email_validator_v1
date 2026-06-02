@@ -1,0 +1,26 @@
+{
+  "name": "csv-email-validator",
+  "version": "1.0.0",
+  "description": "CSV Email Validator web tool for uploading, validating, cleaning, and downloading email lists.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "csv",
+    "email-validator",
+    "express",
+    "multer",
+    "nodejs"
+  ],
+  "author": "Simple Neat Solutions, LLC",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

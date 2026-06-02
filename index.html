@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Basic document metadata -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Primary SEO -->
+  <title>CSV Email Validator | Simple Neat Solutions, LLC</title>
+  <meta
+    name="description"
+    content="Validate a CSV email list, remove invalid email formats, view validation results, and download a clean CSV file with only valid email addresses."
+  />
+  <meta
+    name="keywords"
+    content="CSV email validator, email validation tool, clean email list, remove invalid emails, email format checker, Simple Neat Solutions"
+  />
+  <meta name="author" content="Simple Neat Solutions, LLC" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Canonical URL: change this when deployed -->
+  <link rel="canonical" href="http://localhost:5000/" />
+
+  <!-- Open Graph for link previews -->
+  <meta property="og:title" content="CSV Email Validator | Simple Neat Solutions, LLC" />
+  <meta
+    property="og:description"
+    content="Upload a CSV file with one email per line, validate email formats, remove invalid entries, and download a clean CSV."
+  />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="http://localhost:5000/" />
+  <meta property="og:site_name" content="CSV Email Validator" />
+
+  <!-- Twitter card metadata -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="CSV Email Validator | Simple Neat Solutions, LLC" />
+  <meta
+    name="twitter:description"
+    content="Validate, clean, and download CSV email lists using a simple browser-based tool."
+  />
+
+  <!-- Browser UI color -->
+  <meta name="theme-color" content="#0A1628" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <a class="skip-link" href="#mainContent">Skip to main content</a>
+
+  <header class="site-header" id="top">
+    <nav class="navbar" aria-label="Primary navigation">
+      <a href="#top" class="brand" aria-label="CSV Email Validator home">
+        <span class="logo-mark" aria-hidden="true">EV</span>
+
+        <span class="brand-text">
+          <strong>Email Validator</strong>
+          <small>by Simple Neat Solutions</small>
+        </span>
+      </a>
+
+      <a href="#validator" class="nav-cta">Try the Validator</a>
+    </nav>
+  </header>
+
+  <main id="mainContent">
+    <section class="hero" id="home" aria-labelledby="heroTitle">
+      <div class="container">
+        <div class="hero-content">
+          <p class="hero-label">CSV Email Validation Tool</p>
+
+          <h1 id="heroTitle">Clean Your Email List Instantly</h1>
+
+          <p>
+            Upload a CSV file with one email per line, validate email formatting,
+            remove invalid entries, and download a clean list containing only valid emails.
+          </p>
+
+          <div class="hero-actions" aria-label="Primary actions">
+            <a href="#validator" class="primary-link">Start Validation</a>
+            <a href="#howItWorks" class="secondary-link">Learn How It Works</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="tool-section" id="validator" aria-labelledby="validatorTitle">
+      <div class="container">
+        <article class="tool-card" aria-describedby="validatorDescription">
+          <header class="tool-card-header">
+            <p class="section-kicker">Validator</p>
+
+            <h2 id="validatorTitle">Upload CSV Email List</h2>
+
+            <p id="validatorDescription">
+              Select a CSV file that contains one email address per line. The backend
+              will check each entry and separate valid emails from removed entries.
+            </p>
+          </header>
+
+          <form class="upload-form" aria-label="CSV email validation form">
+            <div
+              class="upload-zone"
+              role="button"
+              tabindex="0"
+              aria-label="Upload CSV file by clicking or dragging and dropping"
+            >
+              <div class="upload-content">
+                <div class="upload-icon" aria-hidden="true">↑</div>
+
+                <h3 id="uploadTitle">Drop your CSV file here</h3>
+
+                <p>
+                  Drag and drop your CSV file, or
+                  <span class="browse-text">click to browse</span>.
+                </p>
+
+                <p class="upload-note">
+                  Accepted format: <strong>.csv</strong>. Maximum size: <strong>5MB</strong>.
+                </p>
+
+                <div id="fileMeta" class="file-meta" aria-live="polite"></div>
+              </div>
+            </div>
+
+            <input
+              type="file"
+              id="csvFile"
+              class="file-input"
+              accept=".csv"
+              aria-label="Choose CSV file"
+            />
+
+            <div
+              id="errorMessage"
+              class="error-message"
+              aria-live="assertive"
+            ></div>
+
+            <div class="action-row">
+              <button
+                type="button"
+                id="validateButton"
+                class="primary-btn"
+                disabled
+              >
+                Validate Emails
+              </button>
+            </div>
+
+            <div
+              id="progressWrap"
+              class="progress-wrap"
+              aria-label="Validation progress"
+            >
+              <p class="progress-label">Processing CSV file...</p>
+
+              <div class="progress-track" aria-hidden="true">
+                <div id="progressBar" class="progress-bar"></div>
+              </div>
+            </div>
+          </form>
+        </article>
+      </div>
+    </section>
+
+    <section
+      id="resultsSection"
+      class="results-section"
+      aria-labelledby="resultsTitle"
+      aria-live="polite"
+    >
+      <div class="container">
+        <article class="results-card">
+          <header class="section-heading">
+            <p class="section-kicker">Results</p>
+
+            <h2 id="resultsTitle">Validation Results</h2>
+
+            <p>
+              Valid emails are kept. Invalid emails are removed and shown with the
+              exact reason for rejection.
+            </p>
+          </header>
+
+          <section class="summary-grid" aria-label="Validation summary">
+            <article class="stat-box">
+              <strong id="totalCount">0</strong>
+              <span>Total Emails</span>
+            </article>
+
+            <article class="stat-box">
+              <strong id="validCount">0</strong>
+              <span>Valid Emails</span>
+            </article>
+
+            <article class="stat-box">
+              <strong id="invalidCount">0</strong>
+              <span>Removed Emails</span>
+            </article>
+          </section>
+
+          <section class="results-grid" aria-label="Detailed validation results">
+            <article class="result-column valid-column" aria-labelledby="validEmailsTitle">
+              <header class="column-header">
+                <h3 id="validEmailsTitle">Valid Emails</h3>
+                <span id="validPill" class="count-pill">0 kept</span>
+              </header>
+
+              <ul
+                id="validList"
+                class="email-list"
+                aria-label="List of valid emails"
+              ></ul>
+            </article>
+
+            <article class="result-column invalid-column" aria-labelledby="invalidEmailsTitle">
+              <header class="column-header">
+                <h3 id="invalidEmailsTitle">Removed Emails</h3>
+                <span id="invalidPill" class="count-pill">0 removed</span>
+              </header>
+
+              <ul
+                id="invalidList"
+                class="email-list"
+                aria-label="List of invalid emails with reasons"
+              ></ul>
+            </article>
+          </section>
+
+          <div class="results-actions" aria-label="Result actions">
+            <button
+              type="button"
+              id="downloadButton"
+              class="primary-btn"
+              disabled
+            >
+              Download Clean CSV
+            </button>
+
+            <button
+              type="button"
+              id="resetButton"
+              class="secondary-btn"
+            >
+              Validate Another File
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section steps-section" id="howItWorks" aria-labelledby="stepsTitle">
+      <div class="container">
+        <header class="section-heading">
+          <p class="section-kicker">Process</p>
+
+          <h2 id="stepsTitle">How It Works</h2>
+
+          <p>
+            A simple workflow for cleaning CSV email lists before using them in
+            business communication or internal processing.
+          </p>
+        </header>
+
+        <div class="steps-grid">
+          <article class="step-card">
+            <div class="step-number" aria-hidden="true">1</div>
+
+            <h3>Upload CSV</h3>
+
+            <p>
+              Choose a CSV file that contains one email address per line.
+            </p>
+          </article>
+
+          <article class="step-card">
+            <div class="step-number" aria-hidden="true">2</div>
+
+            <h3>Validate Formatting</h3>
+
+            <p>
+              The Node.js backend checks each email against formatting rules and
+              identifies invalid entries.
+            </p>
+          </article>
+
+          <article class="step-card">
+            <div class="step-number" aria-hidden="true">3</div>
+
+            <h3>Download Clean List</h3>
+
+            <p>
+              Export a cleaned CSV file containing only the valid email addresses.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section disclaimer-section" aria-labelledby="disclaimerTitle">
+      <div class="container">
+        <article class="disclaimer-card">
+          <h2 id="disclaimerTitle">Format Validation Only</h2>
+
+          <p>
+            This tool checks whether each email follows valid formatting rules.
+            It does not verify whether the email inbox exists or can actively receive mail.
+          </p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <p>© 2026 Simple Neat Solutions, LLC</p>
+
+      <small>
+        CSV Email Validator — built with HTML, CSS, vanilla JavaScript, Node.js, Express, and Multer.
+      </small>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
