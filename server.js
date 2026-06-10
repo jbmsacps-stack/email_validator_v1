@@ -1,7 +1,10 @@
+const dns = require("dns").promises;
 const express = require("express");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
+
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 const app = express();
 const PORT = 5000;
@@ -173,11 +176,29 @@ function validateEmail(email) {
   };
 }
 
+async function hasMxRecords(domain) {
+  try {
+    const cleanDomain = domain.trim().toLowerCase();
+
+    const records = await dns.resolveMx(cleanDomain);
+
+    console.log("MX records for", cleanDomain, records);
+
+    return Array.isArray(records) && records.length > 0;
+  } catch (error) {
+    console.error("MX lookup failed for domain:", domain);
+    console.error("DNS error code:", error.code);
+    console.error("DNS error message:", error.message);
+
+    return false;
+  }
+}
+
 /**
  * POST endpoint for uploading and validating a CSV email file.
  * Reads one email per line, separates valid and invalid emails, and returns JSON.
  */
-app.post("/api/validate-emails", upload.single("csvFile"), function (req, res) {
+app.post("/api/validate-emails", upload.single("csvFile"), async function (req, res) {
   if (!req.file) {
     return res.status(400).json({
       success: false,
@@ -187,7 +208,7 @@ app.post("/api/validate-emails", upload.single("csvFile"), function (req, res) {
 
   const filePath = req.file.path;
 
-  fs.readFile(filePath, "utf8", function (readError, fileData) {
+  fs.readFile(filePath, "utf8", async function (readError, fileData) {
     // Delete uploaded file after reading attempt
     fs.unlink(filePath, function (unlinkError) {
       if (unlinkError) {
@@ -214,18 +235,36 @@ app.post("/api/validate-emails", upload.single("csvFile"), function (req, res) {
     const validEmails = [];
     const invalidEmails = [];
 
-    lines.forEach(function (email) {
+    for (const email of lines) {
       const result = validateEmail(email);
 
-      if (result.isValid) {
-        validEmails.push(email.trim());
-      } else {
+      // Step 1: Format validation
+      if (!result.isValid) {
         invalidEmails.push({
           email: email,
-          reason: result.reason
+          reason: result.reason,
+          validationStage: "format"
         });
+
+        continue;
       }
-    });
+
+      // Step 2: MX validation
+      const domain = email.split("@")[1].toLowerCase();
+      const mxValid = await hasMxRecords(domain);
+
+      if (!mxValid) {
+        invalidEmails.push({
+          email: email,
+          reason: "Domain cannot receive mail.",
+          validationStage: "mx"
+        });
+
+        continue;
+      }
+
+      validEmails.push(email.trim());
+    }
 
     const cleanedCsv = validEmails.join("\n");
 
